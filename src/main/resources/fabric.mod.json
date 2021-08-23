@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "rainbow-shenanigans",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Rainbow Shenanigans",
+  "description": "Client-side color-related changes like sorting colored blocks in the creative inventory",
   "authors": ["Neecko5b84"],
   "contact": {
     "homepage": "https://github.com/A5b84/fabric-example-mod",
@@ -13,14 +13,14 @@
   },
 
   "license": "LGPL-3.0-or-later",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/rainbow-shenanigans/icon.png",
 
   "environment": "client",
   "entrypoints": {
-    "client": ["io.github.a5b84.example.ExampleMod"],
-    "modmenu": ["io.github.a5b84.example.config.ModMenuIntegration"]
+    "client": ["io.github.a5b84.rainbowshenanigans.RainbowShenanigansMod"],
+    "modmenu": ["io.github.a5b84.rainbowshenanigans.config.ModMenuIntegration"]
   },
-  "mixins": ["modid.mixins.json"],
+  "mixins": ["rainbow-shenanigans.mixins.json"],
 
   "depends": {
     "cloth-config2": ">=4.9.0"

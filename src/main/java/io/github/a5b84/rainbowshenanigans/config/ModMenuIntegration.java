@@ -1,4 +1,4 @@
-package io.github.a5b84.example.config;
+package io.github.a5b84.rainbowshenanigans.config;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
