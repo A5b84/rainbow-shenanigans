@@ -1,20 +1,25 @@
 package io.github.a5b84.rainbowshenanigans;
 
-import io.github.a5b84.rainbowshenanigans.config.ExampleModConfig;
+import io.github.a5b84.rainbowshenanigans.config.RainbowShenanigansConfig;
+import io.github.a5b84.rainbowshenanigans.config.RainbowShenanigansConfigSerializer;
 import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
+import net.minecraft.util.registry.Registry;
 
 public class RainbowShenanigansMod implements ClientModInitializer {
 
-    public static final String ID = "rainbow-shenanigans";
+    public static final String MOD_ID = "rainbow-shenanigans";
 
-    public static ExampleModConfig config;
+    public static RainbowShenanigansConfig config;
 
     @Override
     public void onInitializeClient() {
-        AutoConfig.register(ExampleModConfig.class, GsonConfigSerializer::new);
-        config = AutoConfig.getConfigHolder(ExampleModConfig.class).getConfig();
+        AutoConfig.register(RainbowShenanigansConfig.class, RainbowShenanigansConfigSerializer::new);
+        config = AutoConfig.getConfigHolder(RainbowShenanigansConfig.class).getConfig();
+
+        // Sort the item registry (not doing this earlier because the config
+        // wasn't loaded yet and the registry would have been sorted twice)
+        ((ColorSortableRegistry) Registry.ITEM).makeColorSorted();
     }
 
 }

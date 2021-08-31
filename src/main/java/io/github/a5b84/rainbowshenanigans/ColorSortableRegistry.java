@@ -4,5 +4,6 @@ public interface ColorSortableRegistry {
 
     boolean isColorSorted();
     void makeColorSorted();
+    void colorSort();
 
 }

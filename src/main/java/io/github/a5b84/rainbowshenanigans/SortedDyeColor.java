@@ -2,6 +2,7 @@ package io.github.a5b84.rainbowshenanigans;
 
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 public enum SortedDyeColor {
     WHITE(0, DyeColor.WHITE),
@@ -21,13 +22,20 @@ public enum SortedDyeColor {
     MAGENTA(14, DyeColor.MAGENTA),
     PINK(15, DyeColor.PINK);
 
-    public static final int COLOR_COUNT = values().length;
+    public static SortedDyeColor[] order = values();
+    public static SortedDyeColor[] sheepOrder = order;
+    public static final int COLOR_COUNT = order.length;
 
-    public final int order;
+    /** Index of the color in {@link #values()}
+     * ({@code values()[this.index] == this}) */
+    public final int defaultIndex;
+    /** Index of the color in {@link #order}
+     * ({@code currentOrder[this.index] == this}) */
+    public int index;
     public final DyeColor dyeColor;
 
-    SortedDyeColor(int order, DyeColor dyeColor) {
-        this.order = order;
+    SortedDyeColor(int defaultIndex, DyeColor dyeColor) {
+        this.defaultIndex = index = defaultIndex;
         this.dyeColor = dyeColor;
     }
 
@@ -35,36 +43,51 @@ public enum SortedDyeColor {
         return dyeColor.getName();
     }
 
-    public static SortedDyeColor getSortedDyeColor(String id) {
+
+    @Nullable
+    public static SortedDyeColor byName(String name) {
+        for (SortedDyeColor color : values()) {
+            if (color.dyeColor.getName().equals(name)) {
+                return color;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @return the color corresponding to {@code id} (the path part of an
+     * {@link Identifier}) or null
+     */
+    public static SortedDyeColor byPath(String path) {
         SortedDyeColor color = null;
 
-        if (id.charAt(0) == 'b') {
-            if (id.charAt(1) == 'l') {
-                if (id.startsWith("ack", 2)) color = BLACK;
-                else if (id.startsWith("ue" , 2)) color = BLUE;
-            } else if (id.startsWith("rown", 1)) color = BROWN;
-        } else if (id.startsWith("cyan")) color = CYAN;
-        else if (id.charAt(0) == 'g') {
-            if (id.startsWith("ray", 1)) color = GRAY;
-            else if (id.startsWith("reen", 1)) color = GREEN;
-        } else if (id.startsWith("li")) {
-            if (id.startsWith("ght_", 2)) {
-                if (id.startsWith("blue", 6)) color = LIGHT_BLUE;
-                else if (id.startsWith("gray", 6)) color = LIGHT_GRAY;
-            } else if (id.startsWith("me", 2)) color = LIME;
-        } else if (id.startsWith("magenta")) color = MAGENTA;
-        else if (id.startsWith("orange")) color = ORANGE;
-        else if (id.charAt(0) == 'p') {
-            if (id.startsWith("ink", 1)) color = PINK;
-            else if (id.startsWith("urple", 1)) color = PURPLE;
-        } else if (id.startsWith("red")) color = RED;
-        else if (id.startsWith("white")) color = WHITE;
-        else if (id.startsWith("yellow")) color = YELLOW;
+        if (path.charAt(0) == 'b') {
+            if (path.charAt(1) == 'l') {
+                if (path.startsWith("ack", 2)) color = BLACK;
+                else if (path.startsWith("ue" , 2)) color = BLUE;
+            } else if (path.startsWith("rown", 1)) color = BROWN;
+        } else if (path.startsWith("cyan")) color = CYAN;
+        else if (path.charAt(0) == 'g') {
+            if (path.startsWith("ray", 1)) color = GRAY;
+            else if (path.startsWith("reen", 1)) color = GREEN;
+        } else if (path.startsWith("li")) {
+            if (path.startsWith("ght_", 2)) {
+                if (path.startsWith("blue", 6)) color = LIGHT_BLUE;
+                else if (path.startsWith("gray", 6)) color = LIGHT_GRAY;
+            } else if (path.startsWith("me", 2)) color = LIME;
+        } else if (path.startsWith("magenta")) color = MAGENTA;
+        else if (path.startsWith("orange")) color = ORANGE;
+        else if (path.charAt(0) == 'p') {
+            if (path.startsWith("ink", 1)) color = PINK;
+            else if (path.startsWith("urple", 1)) color = PURPLE;
+        } else if (path.startsWith("red")) color = RED;
+        else if (path.startsWith("white")) color = WHITE;
+        else if (path.startsWith("yellow")) color = YELLOW;
 
         // Check that the color is an actual color (e.g. filter out redstone)
         if (color != null) {
             int colorLength = color.getName().length();
-            if (id.length() > colorLength && isWordCharacter(id.charAt(colorLength))) {
+            if (path.length() > colorLength && isWordCharacter(path.charAt(colorLength))) {
                 color = null;
             }
         }

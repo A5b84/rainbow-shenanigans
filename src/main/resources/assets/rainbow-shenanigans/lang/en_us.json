@@ -1,7 +1,15 @@
 {
-    "text.autoconfig.rainbow-shenanigans.title": "Example Mod Config",
+    "text.autoconfig.rainbow-shenanigans.title": "Rainbow Shenanigans Config",
 
     "text.autoconfig.rainbow-shenanigans.category.default": "General Settings",
 
-    "text.autoconfig.rainbow-shenanigans.option.something": "Something"
+    "text.autoconfig.rainbow-shenanigans.option.colorOrder": "Color Order",
+    "text.autoconfig.rainbow-shenanigans.option.colorOrder.@Tooltip[0]": "Comma separated list of colors (e.g. \"white,light_gray,gray,black\")",
+    "text.autoconfig.rainbow-shenanigans.option.colorOrder.@Tooltip[1]": "Duplicates and invalid values are ignored,",
+    "text.autoconfig.rainbow-shenanigans.option.colorOrder.@Tooltip[2]": "missing values are appended using the mod's default order.",
+    "text.autoconfig.rainbow-shenanigans.option.colorOrder.@Tooltip[3]": "A restart may be required for some features to update.",
+    "text.autoconfig.rainbow-shenanigans.option.sheepColorOrder": "jeb_ Sheep Color Order",
+    "text.autoconfig.rainbow-shenanigans.option.sheepColorOrder.@Tooltip[0]": "Comma separated list of colors (e.g. \"white,light_gray,gray,black\")",
+    "text.autoconfig.rainbow-shenanigans.option.sheepColorOrder.@Tooltip[1]": "Invalid values are ignored, duplicates are not.",
+    "text.autoconfig.rainbow-shenanigans.option.sheepColorOrder.@Tooltip[2]": "Leave this empty to use the value above instead."
 }

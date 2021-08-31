@@ -66,7 +66,7 @@ public abstract class SimpleRegistryMixin<T> implements ColorSortableRegistry {
 
     @Unique
     private void addEntry(int rawId, Identifier id, T entry) {
-        SortedDyeColor color = SortedDyeColor.getSortedDyeColor(id.getPath());
+        SortedDyeColor color = SortedDyeColor.byPath(id.getPath());
 
         if (color == null) {
             // Regular item, register the last batch
@@ -111,20 +111,29 @@ public abstract class SimpleRegistryMixin<T> implements ColorSortableRegistry {
     public void makeColorSorted() {
         int capacity = ((ObjectArrayList<T>) rawIdToEntry).elements().length;
         sortedEntries = new ObjectArrayList<>(capacity);
+        colorSort();
+    }
+
+    @Override
+    public void colorSort() {
+        if (!isColorSorted()) {
+            throw new IllegalStateException("Tried to sort a registry that isn't color-sorted");
+        }
+
+        sortedEntries.clear(); // Maybe not needed
         sortedEntries.size(rawIdToEntry.size());
 
         if (!rawIdToEntry.isEmpty()) {
-            // Sort existing entries, shouldn't happen if this method is
-            // called early enough (i.e. before entries are added)
+            // Sort existing entries
             int rawId = 0;
+            BiMap<T, Identifier> entryToId = idToEntry.inverse();
             for (T entry : rawIdToEntry) {
                 if (entry != null) {
-                    Identifier id = idToEntry.inverse().get(entry);
+                    Identifier id = entryToId.get(entry);
                     addEntry(rawId, id, entry);
                 }
                 rawId++;
             }
         }
     }
-
 }
