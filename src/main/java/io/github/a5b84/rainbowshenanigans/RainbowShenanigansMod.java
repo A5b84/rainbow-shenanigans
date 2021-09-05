@@ -12,6 +12,14 @@ public class RainbowShenanigansMod implements ClientModInitializer {
 
     public static RainbowShenanigansConfig config;
 
+    /** Main color permutation, should contain every {@link SortedDyeColor}
+     * exactly once and should be coherent with {@link SortedDyeColor#mainIndex} */
+    public static SortedDyeColor[] mainPermutation = SortedDyeColor.values();
+
+    /** List of sheep colors, may have duplicates but may not be empty */
+    public static SortedDyeColor[] sheepOrder = mainPermutation;
+
+
     @Override
     public void onInitializeClient() {
         AutoConfig.register(RainbowShenanigansConfig.class, RainbowShenanigansConfigSerializer::new);

@@ -29,10 +29,10 @@ public class RainbowShenanigansConfig implements ConfigData {
     }
 
     private void updateColorOrder() {
-        String[] colorNames = splitColors(colorOrder, SortedDyeColor.COLOR_COUNT);
+        String[] colorNames = splitColors(colorOrder, SortedDyeColor.COUNT);
         SortedDyeColor[] remainingColors = SortedDyeColor.values();
         //      ^ null means the value has been added
-        SortedDyeColor[] newOrder = new SortedDyeColor[SortedDyeColor.COLOR_COUNT];
+        SortedDyeColor[] newOrder = new SortedDyeColor[SortedDyeColor.COUNT];
         int i = 0;
 
         // Add the colors in the config
@@ -40,8 +40,8 @@ public class RainbowShenanigansConfig implements ConfigData {
             SortedDyeColor color = parseColor(name);
             if (color != null && remainingColors[color.defaultIndex] != null) {
                 newOrder[i] = color;
-                remainingColors[color.defaultIndex] = null;
-                color.index = i;
+                remainingColors[color.ordinal()] = null;
+                color.mainIndex = i;
                 i++;
             }
         }
@@ -50,12 +50,12 @@ public class RainbowShenanigansConfig implements ConfigData {
         for (SortedDyeColor color : remainingColors) {
             if (color != null) {
                 newOrder[i] = color;
-                color.index = i;
+                color.mainIndex = i;
                 i++;
             }
         }
 
-        SortedDyeColor.order = newOrder;
+        RainbowShenanigansMod.mainPermutation = newOrder;
 
         // Sort the item registry
         ColorSortableRegistry itemRegistry = (ColorSortableRegistry) Registry.ITEM;
@@ -77,8 +77,8 @@ public class RainbowShenanigansConfig implements ConfigData {
             }
         }
 
-        SortedDyeColor.sheepOrder = newOrder.isEmpty()
-                ? SortedDyeColor.order
+        RainbowShenanigansMod.sheepOrder = newOrder.isEmpty()
+                ? RainbowShenanigansMod.mainPermutation
                 : newOrder.toArray(new SortedDyeColor[0]);
     }
 

@@ -12,7 +12,7 @@ public class ColorBatch<T> {
     private boolean registered;
 
     @SuppressWarnings("unchecked")
-    private final T[] entries = (T[]) new Object[SortedDyeColor.COLOR_COUNT];
+    private final T[] entries = (T[]) new Object[SortedDyeColor.COUNT];
 
 
     public ColorBatch(Identifier id, SortedDyeColor color) {
@@ -41,12 +41,12 @@ public class ColorBatch<T> {
     }
 
     public void addEntry(Identifier id, T entry, SortedDyeColor color) {
-        if (entries[color.index] != null) {
+        if (entries[color.mainIndex] != null) {
             throw new IllegalStateException("Two identifiers with color " + color.dyeColor.getName()
-                    + " in the same batch: " + entries[color.index] + ", " + id);
+                    + " in the same batch: " + entries[color.mainIndex] + ", " + id);
         }
 
-        entries[color.index] = entry;
+        entries[color.mainIndex] = entry;
     }
 
     public void register(List<T> list, int startIndex) {

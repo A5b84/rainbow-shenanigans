@@ -1,6 +1,6 @@
 package io.github.a5b84.rainbowshenanigans.mixin;
 
-import io.github.a5b84.rainbowshenanigans.SortedDyeColor;
+import io.github.a5b84.rainbowshenanigans.RainbowShenanigansMod;
 import net.minecraft.client.render.entity.feature.SheepWoolFeatureRenderer;
 import net.minecraft.util.DyeColor;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,14 +18,14 @@ public abstract class SheepWoolFeatureRendererMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/util/DyeColor;values()[Lnet/minecraft/util/DyeColor;", shift = BY, by = 3),
             index = 16)
     private int modifyDyeColorCount(int old) {
-        return SortedDyeColor.sheepOrder.length;
+        return RainbowShenanigansMod.sheepOrder.length;
     }
 
     /** Replaces the current and next colors */
     @Redirect(method = "render",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/util/DyeColor;byId(I)Lnet/minecraft/util/DyeColor;"))
     private DyeColor dyeColorProxy(int id) {
-        return SortedDyeColor.sheepOrder[id].dyeColor;
+        return RainbowShenanigansMod.sheepOrder[id].dyeColor;
     }
 
 }
