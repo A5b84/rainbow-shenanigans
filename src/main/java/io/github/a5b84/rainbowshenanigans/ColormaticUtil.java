@@ -11,7 +11,7 @@ public final class ColormaticUtil {
     private static final String STRING = "Colormatic";
     public static final int LENGTH = STRING.length();
 
-    /** Checks wether a string spells "Colormatic" with a formatting code
+    /** Checks whether a string spells "Colormatic" with a formatting code
      * before every letter */
     public static boolean isColormatic(@Nullable String s) {
         if (s == null || s.length() != LENGTH * 3) {
