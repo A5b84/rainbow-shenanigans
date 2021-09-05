@@ -6,9 +6,13 @@ import io.github.a5b84.rainbowshenanigans.RainbowShenanigansMod;
 import io.github.a5b84.rainbowshenanigans.SortedDyeColor;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.Excluded;
+import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.Tooltip;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.registry.Registry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -32,27 +36,29 @@ import static net.minecraft.util.Formatting.YELLOW;
 @Config(name = RainbowShenanigansMod.MOD_ID)
 public class RainbowShenanigansConfig implements ConfigData {
 
-    @ConfigEntry.Gui.Tooltip(count = 4)
-    public String colorPermutation = join(SortedDyeColor.values(), SortedDyeColor::getName, 103);
+    @Excluded
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    @ConfigEntry.Gui.Tooltip(count = 3)
+    @Tooltip(count = 4)
+    public String itemColorPermutation = join(SortedDyeColor.values(), SortedDyeColor::getName, 103);
+
+    @Tooltip(count = 3)
     public String sheepColorOrder = "red,orange,yellow,lime,cyan,blue,purple,magenta";
 
-    @ConfigEntry.Gui.Tooltip(count = 2)
+    @Tooltip(count = 2)
     public String colormaticColorOrder = getDefaultColormaticOrderString();
 
 
-
     public void onChanged() {
-        updateMainColorPermutation();
+        updateItemColorPermutation();
         updateSheepColorOrder();
         updateColormaticColorOrder();
     }
 
-    private void updateMainColorPermutation() {
-        String[] colorNames = splitColors(colorPermutation, SortedDyeColor.COUNT + 1);
+    private void updateItemColorPermutation() {
+        String[] colorNames = splitColors(itemColorPermutation, SortedDyeColor.COUNT + 1);
         //      ^ limit = COUNT + 1 so the last value isn't invalid if there
-        //      are more valeus
+        //      are more values
         SortedDyeColor[] remainingColors = SortedDyeColor.values();
         //      ^ null means the value has been added
         SortedDyeColor[] newOrder = new SortedDyeColor[SortedDyeColor.COUNT];
@@ -61,10 +67,14 @@ public class RainbowShenanigansConfig implements ConfigData {
         // Add and filter colors
         for (String name : colorNames) {
             SortedDyeColor color = parseColor(name);
-            if (color != null && remainingColors[color.ordinal()] != null) {
+            if (color == null) {
+                logInvalidColorWarning(name, "itemColorPermutation");
+            } else if (remainingColors[color.ordinal()] == null) {
+                LOGGER.warn("[Rainbow Shenanigans] Duplicate color '{}' for option 'itemColorPermutation'", name);
+            } else {
                 newOrder[i] = color;
                 remainingColors[color.ordinal()] = null;
-                color.mainIndex = i;
+                color.itemPermutationIndex = i;
                 i++;
             }
         }
@@ -73,12 +83,12 @@ public class RainbowShenanigansConfig implements ConfigData {
         for (SortedDyeColor color : remainingColors) {
             if (color != null) {
                 newOrder[i] = color;
-                color.mainIndex = i;
+                color.itemPermutationIndex = i;
                 i++;
             }
         }
 
-        RainbowShenanigansMod.mainPermutation = newOrder;
+        RainbowShenanigansMod.itemPermutation = newOrder;
 
         // Sort the item registry
         ColorSortableRegistry itemRegistry = (ColorSortableRegistry) Registry.ITEM;
@@ -90,17 +100,19 @@ public class RainbowShenanigansConfig implements ConfigData {
     private void updateSheepColorOrder() {
         RainbowShenanigansMod.sheepOrder = parseColorOrder(
                 sheepColorOrder, 0, RainbowShenanigansConfig::parseColor,
-                c -> true, () -> new SortedDyeColor[0], () -> RainbowShenanigansMod.mainPermutation);
+                c -> true, "sheepColorOrder", () -> new SortedDyeColor[0],
+                () -> RainbowShenanigansMod.itemPermutation);
     }
 
     private void updateColormaticColorOrder() {
         RainbowShenanigansMod.colormaticOrder = parseColorOrder(
                 colormaticColorOrder, ColormaticUtil.LENGTH + 1,
                 RainbowShenanigansConfig::parseFormatting, Formatting::isColor,
-                () -> new Formatting[0], RainbowShenanigansConfig::getDefaultColormaticOrder);
+                "colormaticColorOrder", () -> new Formatting[0],
+                RainbowShenanigansConfig::getDefaultColormaticOrder);
     }
 
-    private static <T> T[] parseColorOrder(String list, int limit, Function<String, T> valueParser, Predicate<T> filter, Supplier<T[]> arraySupplier, Supplier<T[]> fallback) {
+    private static <T> T[] parseColorOrder(String list, int limit, Function<String, T> valueParser, Predicate<T> filter, String optionName, Supplier<T[]> arraySupplier, Supplier<T[]> fallback) {
         // Update the order of colors
         String[] colorNames = splitColors(list, limit);
         List<T> newOrder = new ArrayList<>(colorNames.length);
@@ -110,6 +122,8 @@ public class RainbowShenanigansConfig implements ConfigData {
             T value = valueParser.apply(name);
             if (value != null && filter.test(value)) {
                 newOrder.add(value);
+            } else {
+                logInvalidColorWarning(name, optionName);
             }
         }
 
@@ -153,6 +167,12 @@ public class RainbowShenanigansConfig implements ConfigData {
             builder.append(toString.apply(value));
         }
         return builder.toString();
+    }
+
+
+    private static void logInvalidColorWarning(String color, String optionName) {
+        LOGGER.warn("[Rainbow Shenanigans] Invalid color '{}' for setting '{}'",
+                color, I18n.translate("text.autoconfig.rainbow-shenanigans.option." + optionName));
     }
 
 }

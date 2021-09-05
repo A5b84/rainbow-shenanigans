@@ -41,12 +41,12 @@ public class ColorBatch<T> {
     }
 
     public void addEntry(Identifier id, T entry, SortedDyeColor color) {
-        if (entries[color.mainIndex] != null) {
+        if (entries[color.itemPermutationIndex] != null) {
             throw new IllegalStateException("Two identifiers with color " + color.dyeColor.getName()
-                    + " in the same batch: " + entries[color.mainIndex] + ", " + id);
+                    + " in the same batch: " + entries[color.itemPermutationIndex] + ", " + id);
         }
 
-        entries[color.mainIndex] = entry;
+        entries[color.itemPermutationIndex] = entry;
     }
 
     public void register(List<T> list, int startIndex) {

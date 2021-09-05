@@ -26,15 +26,14 @@ public enum SortedDyeColor {
     public static final int COUNT = values().length;
 
 
-    /** Index of the color in {@link RainbowShenanigansMod#mainPermutation}
-     * ({@code mainPermutation[this.index] == this}) */
-    public int mainIndex;
+    /** Index of the color in {@link RainbowShenanigansMod#itemPermutation} */
+    public int itemPermutationIndex;
 
     public final DyeColor dyeColor;
 
 
     SortedDyeColor(DyeColor dyeColor) {
-        mainIndex = ordinal();
+        itemPermutationIndex = ordinal();
         this.dyeColor = dyeColor;
     }
 
