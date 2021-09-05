@@ -4,6 +4,7 @@ import io.github.a5b84.rainbowshenanigans.config.RainbowShenanigansConfig;
 import io.github.a5b84.rainbowshenanigans.config.RainbowShenanigansConfigSerializer;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.api.ClientModInitializer;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.registry.Registry;
 
 public class RainbowShenanigansMod implements ClientModInitializer {
@@ -14,10 +15,12 @@ public class RainbowShenanigansMod implements ClientModInitializer {
 
     /** Main color permutation, should contain every {@link SortedDyeColor}
      * exactly once and should be coherent with {@link SortedDyeColor#mainIndex} */
-    public static SortedDyeColor[] mainPermutation = SortedDyeColor.values();
+    public static SortedDyeColor[] mainPermutation;
 
     /** List of sheep colors, may have duplicates but may not be empty */
-    public static SortedDyeColor[] sheepOrder = mainPermutation;
+    public static SortedDyeColor[] sheepOrder;
+
+    public static Formatting[] colormaticOrder;
 
 
     @Override
