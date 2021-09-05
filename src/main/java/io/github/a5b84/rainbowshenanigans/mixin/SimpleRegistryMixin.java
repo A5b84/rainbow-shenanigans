@@ -37,7 +37,7 @@ public abstract class SimpleRegistryMixin<T> implements ColorSortableRegistry {
 
     /** Adds the new value to {@link #sortedEntries} */
     @Inject(method = "set(ILnet/minecraft/util/registry/RegistryKey;Ljava/lang/Object;Lcom/mojang/serialization/Lifecycle;Z)Ljava/lang/Object;",
-            at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/ObjectList;size(I)V", shift = At.Shift.AFTER))
+            at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/ObjectList;size(I)V", shift = At.Shift.AFTER, remap = false))
     private <V extends T> void onSet(int rawId, RegistryKey<T> key, V entry, Lifecycle lifecycle, boolean checkDuplicateKeys, CallbackInfoReturnable<V> cir) {
         if (isColorSorted()) {
             if (rawId >= sortedEntries.size()) {

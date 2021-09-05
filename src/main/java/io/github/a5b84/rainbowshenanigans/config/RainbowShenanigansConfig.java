@@ -6,6 +6,7 @@ import io.github.a5b84.rainbowshenanigans.RainbowShenanigansMod;
 import io.github.a5b84.rainbowshenanigans.SortedDyeColor;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.annotation.Config.Gui.Background;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.Excluded;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.Tooltip;
 import net.minecraft.client.resource.language.I18n;
@@ -34,6 +35,7 @@ import static net.minecraft.util.Formatting.RED;
 import static net.minecraft.util.Formatting.YELLOW;
 
 @Config(name = RainbowShenanigansMod.MOD_ID)
+@Background(Background.TRANSPARENT)
 public class RainbowShenanigansConfig implements ConfigData {
 
     @Excluded
