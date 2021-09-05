@@ -57,41 +57,51 @@ public enum SortedDyeColor {
      * {@link Identifier}) or null
      */
     @Nullable
-    public static SortedDyeColor byPath(String path) {
+    public static ColorMatch byPath(String path) {
         SortedDyeColor color = null;
+        int i;
 
-        if (path.charAt(0) == 'b') {
-            if (path.charAt(1) == 'l') {
-                if (path.startsWith("ack", 2)) color = BLACK;
-                else if (path.startsWith("ue", 2)) color = BLUE;
-            } else if (path.startsWith("rown", 1)) color = BROWN;
-        } else if (path.startsWith("cyan")) color = CYAN;
-        else if (path.startsWith("gr")) {
-            if (path.startsWith("ay", 2)) color = GRAY;
-            else if (path.startsWith("een", 2)) color = GREEN;
-        } else if (path.startsWith("li")) {
-            if (path.startsWith("ght_", 2)) {
-                if (path.startsWith("blue", 6)) color = LIGHT_BLUE;
-                else if (path.startsWith("gray", 6)) color = LIGHT_GRAY;
-            } else if (path.startsWith("me", 2)) color = LIME;
-        } else if (path.startsWith("magenta")) color = MAGENTA;
-        else if (path.startsWith("orange")) color = ORANGE;
-        else if (path.charAt(0) == 'p') {
-            if (path.startsWith("ink", 1)) color = PINK;
-            else if (path.startsWith("urple", 1)) color = PURPLE;
-        } else if (path.startsWith("red")) color = RED;
-        else if (path.startsWith("white")) color = WHITE;
-        else if (path.startsWith("yellow")) color = YELLOW;
+        for (i = 0; i < path.length(); i++) {
+            if (path.charAt(i) == 'b') {
+                if (path.charAt(i + 1) == 'l') {
+                    if (path.startsWith("ack", i + 2)) color = BLACK;
+                    else if (path.startsWith("ue", i + 2)) color = BLUE;
+                } else if (path.startsWith("rown", i + 1)) color = BROWN;
+            } else if (path.startsWith("cyan", i)) color = CYAN;
+            else if (path.startsWith("gr", i)) {
+                if (path.startsWith("ay", i + 2)) color = GRAY;
+                else if (path.startsWith("een", i + 2)) color = GREEN;
+            } else if (path.startsWith("li", i)) {
+                if (path.startsWith("ght_", i + 2)) {
+                    if (path.startsWith("blue", i + 6)) color = LIGHT_BLUE;
+                    else if (path.startsWith("gray", i + 6)) color = LIGHT_GRAY;
+                } else if (path.startsWith("me", i + 2)) color = LIME;
+            } else if (path.startsWith("magenta", i)) color = MAGENTA;
+            else if (path.startsWith("orange", i)) color = ORANGE;
+            else if (path.charAt(i) == 'p') {
+                if (path.startsWith("ink", i + 1)) color = PINK;
+                else if (path.startsWith("urple", i + 1)) color = PURPLE;
+            } else if (path.startsWith("red", i)) color = RED;
+            else if (path.startsWith("white", i)) color = WHITE;
+            else if (path.startsWith("yellow", i)) color = YELLOW;
 
-        // Check that the color is an actual color (e.g. filter out redstone)
-        if (color != null) {
-            int colorLength = color.getName().length();
-            if (path.length() > colorLength && isWordCharacter(path.charAt(colorLength))) {
-                color = null;
+            if (color != null) {
+                // Check that the color is not part of a word (e.g. filter out redstone)
+                int colorEnd = i + color.getName().length();
+                if (colorEnd < path.length() && isWordCharacter(path.charAt(colorEnd))) {
+                    color = null;
+                } else {
+                    break; // Not part of a word
+                }
+            }
+
+            // Move to the next word
+            for (; i < path.length(); i++) {
+                if (!isWordCharacter(path.charAt(i))) break;
             }
         }
 
-        return color;
+        return color != null ? new ColorMatch(color, i) : null;
     }
 
     /**
@@ -100,6 +110,12 @@ public enum SortedDyeColor {
      */
     private static boolean isWordCharacter(char c) {
         return c >= 'a' && c <= 'z' || c >= '0' && c <= '9';
+    }
+
+    public static record ColorMatch(SortedDyeColor color, int start) {
+        public int end() {
+            return start + color.getName().length();
+        }
     }
 
 }

@@ -6,6 +6,7 @@ import com.mojang.serialization.Lifecycle;
 import io.github.a5b84.rainbowshenanigans.ColorBatch;
 import io.github.a5b84.rainbowshenanigans.ColorSortableRegistry;
 import io.github.a5b84.rainbowshenanigans.SortedDyeColor;
+import io.github.a5b84.rainbowshenanigans.SortedDyeColor.ColorMatch;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.util.Identifier;
@@ -66,9 +67,9 @@ public abstract class SimpleRegistryMixin<T> implements ColorSortableRegistry {
 
     @Unique
     private void addEntry(int rawId, Identifier id, T entry) {
-        SortedDyeColor color = SortedDyeColor.byPath(id.getPath());
+        ColorMatch match = SortedDyeColor.byPath(id.getPath());
 
-        if (color == null) {
+        if (match == null) {
             // Regular item, register the last batch
             if (batch != null) {
                 registerBatch();
@@ -77,20 +78,20 @@ public abstract class SimpleRegistryMixin<T> implements ColorSortableRegistry {
             sortedEntries.set(rawId, entry);
 
         } else {
-            if (batch != null && !batch.matches(id, color)) {
+            if (batch != null && !batch.matches(id, match)) {
                 // Item doesn't fit in the current batch, start a new one
                 registerBatch();
-                batch.repurpose(id, color);
+                batch.repurpose(id, match);
                 batchStartIndex = rawId;
             }
 
             if (batch == null) {
                 // Start a new batch
-                batch = new ColorBatch<>(id, color);
+                batch = new ColorBatch<>(id, match);
                 batchStartIndex = rawId;
             }
 
-            batch.addEntry(id, entry, color);
+            batch.addEntry(id, entry, match.color());
         }
     }
 
