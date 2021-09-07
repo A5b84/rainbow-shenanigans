@@ -4,9 +4,11 @@
   "package": "io.github.a5b84.rainbowshenanigans.mixin",
   "compatibilityLevel": "JAVA_16",
   "client": [
+    "MinecraftClientMixin",
     "SheepWoolFeatureRendererMixin",
     "SimpleRegistryMixin",
-    "SplashTextResourceSupplierMixin"
+    "SplashTextResourceSupplierMixin",
+    "TitleScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1,

@@ -4,8 +4,12 @@ import io.github.a5b84.rainbowshenanigans.config.RainbowShenanigansConfig;
 import io.github.a5b84.rainbowshenanigans.config.RainbowShenanigansConfigSerializer;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.api.ClientModInitializer;
+import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.registry.Registry;
+import org.jetbrains.annotations.Nullable;
+
+import java.lang.ref.Reference;
 
 public class RainbowShenanigansMod implements ClientModInitializer {
 
@@ -21,6 +25,9 @@ public class RainbowShenanigansMod implements ClientModInitializer {
     public static SortedDyeColor[] sheepOrder;
 
     public static Formatting[] colormaticOrder;
+
+    @Nullable
+    public static Reference<TitleScreen> titleScreenReference;
 
 
     @Override

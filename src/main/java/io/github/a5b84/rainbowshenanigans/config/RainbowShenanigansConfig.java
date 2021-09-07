@@ -4,11 +4,13 @@ import io.github.a5b84.rainbowshenanigans.ColorSortableRegistry;
 import io.github.a5b84.rainbowshenanigans.ColormaticUtil;
 import io.github.a5b84.rainbowshenanigans.RainbowShenanigansMod;
 import io.github.a5b84.rainbowshenanigans.SortedDyeColor;
+import io.github.a5b84.rainbowshenanigans.mixin.TitleScreenAccessor;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.Config.Gui.Background;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.Excluded;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.Tooltip;
+import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.registry.Registry;
@@ -112,6 +114,18 @@ public class RainbowShenanigansConfig implements ConfigData {
                 RainbowShenanigansConfig::parseFormatting, Formatting::isColor,
                 "colormaticColorOrder", () -> new Formatting[0],
                 RainbowShenanigansConfig::getDefaultColormaticOrder);
+
+        // Update the current splash
+        if (RainbowShenanigansMod.titleScreenReference != null) {
+            TitleScreen titleScreen = RainbowShenanigansMod.titleScreenReference.get();
+            if (titleScreen != null) {
+                if (ColormaticUtil.isColormatic(((TitleScreenAccessor) titleScreen).getSplashText())) {
+                    ((TitleScreenAccessor) titleScreen).setSplashText(ColormaticUtil.getNewColormatic());
+                }
+            } else {
+                RainbowShenanigansMod.titleScreenReference = null;
+            }
+        }
     }
 
     private static <T> T[] parseColorOrder(String list, int limit, Function<String, T> valueParser, Predicate<T> filter, String optionName, Supplier<T[]> arraySupplier, Supplier<T[]> fallback) {
