@@ -177,7 +177,7 @@ public class RainbowShenanigansConfig implements ConfigData {
     private static <T> String join(T[] values, Function<T, String> toString, int capacity) {
         StringBuilder builder = new StringBuilder(capacity);
         for (T value : values) {
-            if (!builder.isEmpty()) {
+            if (builder.length() > 0) {
                 builder.append(',');
             }
             builder.append(toString.apply(value));

@@ -23,7 +23,6 @@
   "mixins": ["rainbow-shenanigans.mixins.json"],
 
   "depends": {
-    "minecraft": ">=1.17-",
     "cloth-config2": ">=4.9.0"
   },
   "suggests": {

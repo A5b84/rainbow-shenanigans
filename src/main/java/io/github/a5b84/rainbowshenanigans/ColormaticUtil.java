@@ -1,6 +1,5 @@
 package io.github.a5b84.rainbowshenanigans;
 
-import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
 public final class ColormaticUtil {
@@ -19,7 +18,7 @@ public final class ColormaticUtil {
         }
 
         for (int i = 0; i < LENGTH; i++) {
-            if (s.charAt(3 * i) != Formatting.field_33292 || s.charAt(3 * i + 2) != STRING.charAt(i)) {
+            if (s.charAt(3 * i) != '§' || s.charAt(3 * i + 2) != STRING.charAt(i)) {
                 return false;
             }
         }

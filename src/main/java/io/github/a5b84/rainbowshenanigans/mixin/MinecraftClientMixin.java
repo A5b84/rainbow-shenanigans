@@ -14,10 +14,10 @@ import java.lang.ref.WeakReference;
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
 
-    @Inject(method = "setScreen", at = @At("HEAD"))
-    private void onSetScreen(Screen screen, CallbackInfo ci) {
-        if (screen instanceof TitleScreen titleScreen) {
-            RainbowShenanigansMod.titleScreenReference = new WeakReference<>(titleScreen);
+    @Inject(method = "openScreen", at = @At("HEAD"))
+    private void onOpenScreen(Screen screen, CallbackInfo ci) {
+        if (screen instanceof TitleScreen) {
+            RainbowShenanigansMod.titleScreenReference = new WeakReference<>((TitleScreen) screen);
         }
     }
 

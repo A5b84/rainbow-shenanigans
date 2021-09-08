@@ -112,10 +112,28 @@ public enum SortedDyeColor {
         return c >= 'a' && c <= 'z' || c >= '0' && c <= '9';
     }
 
-    public static record ColorMatch(SortedDyeColor color, int start) {
+    public static class ColorMatch {
+
+        private final SortedDyeColor color;
+        private final int start;
+
+        public ColorMatch(SortedDyeColor color, int start) {
+            this.color = color;
+            this.start = start;
+        }
+
+        public SortedDyeColor color() {
+            return color;
+        }
+
+        public int start() {
+            return start;
+        }
+
         public int end() {
             return start + color.getName().length();
         }
+
     }
 
 }
