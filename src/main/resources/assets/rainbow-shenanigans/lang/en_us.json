@@ -7,7 +7,7 @@
     "text.autoconfig.rainbow-shenanigans.option.itemColorPermutation.@Tooltip[0]": "Comma separated list of §odye§r colors (e.g. \"red,orange,yellow\")",
     "text.autoconfig.rainbow-shenanigans.option.itemColorPermutation.@Tooltip[1]": "Duplicates and invalid values are ignored,",
     "text.autoconfig.rainbow-shenanigans.option.itemColorPermutation.@Tooltip[2]": "missing values are appended using the mod's default order.",
-    "text.autoconfig.rainbow-shenanigans.option.itemColorPermutation.@Tooltip[3]": "A restart may be required for some features to update.",
+    "text.autoconfig.rainbow-shenanigans.option.itemColorPermutation.@Tooltip[3]": "A restart may be required for changes to take effect everywhere.",
     "text.autoconfig.rainbow-shenanigans.option.sheepColorOrder": "jeb_ Sheep Color Order",
     "text.autoconfig.rainbow-shenanigans.option.sheepColorOrder.@Tooltip[0]": "Comma separated list of §odye§r colors (e.g. \"red,orange,yellow\")",
     "text.autoconfig.rainbow-shenanigans.option.sheepColorOrder.@Tooltip[1]": "Invalid values are ignored, duplicates are not.",
