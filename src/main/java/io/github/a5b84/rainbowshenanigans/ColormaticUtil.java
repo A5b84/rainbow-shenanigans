@@ -19,7 +19,8 @@ public final class ColormaticUtil {
         }
 
         for (int i = 0; i < LENGTH; i++) {
-            if (s.charAt(3 * i) != Formatting.field_33292 || s.charAt(3 * i + 2) != STRING.charAt(i)) {
+            if (s.charAt(3 * i) != Formatting.FORMATTING_CODE_PREFIX
+                    || s.charAt(3 * i + 2) != STRING.charAt(i)) {
                 return false;
             }
         }

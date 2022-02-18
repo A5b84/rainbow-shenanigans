@@ -8,14 +8,11 @@ import io.github.a5b84.rainbowshenanigans.mixin.TitleScreenAccessor;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.Config.Gui.Background;
-import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.Excluded;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.Tooltip;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.registry.Registry;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -25,6 +22,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static io.github.a5b84.rainbowshenanigans.RainbowShenanigansMod.LOGGER;
 import static net.minecraft.util.Formatting.DARK_AQUA;
 import static net.minecraft.util.Formatting.DARK_BLUE;
 import static net.minecraft.util.Formatting.DARK_GREEN;
@@ -39,9 +37,6 @@ import static net.minecraft.util.Formatting.YELLOW;
 @Config(name = RainbowShenanigansMod.MOD_ID)
 @Background(Background.TRANSPARENT)
 public class RainbowShenanigansConfig implements ConfigData {
-
-    @Excluded
-    private static final Logger LOGGER = LogManager.getLogger();
 
     @Tooltip(count = 4)
     public String itemColorPermutation = join(SortedDyeColor.values(), SortedDyeColor::getName, 103);
@@ -96,8 +91,8 @@ public class RainbowShenanigansConfig implements ConfigData {
 
         // Sort the item registry
         ColorSortableRegistry itemRegistry = (ColorSortableRegistry) Registry.ITEM;
-        if (itemRegistry.isColorSorted()) { // See RainbowShenanigansMod#onInitializeClient
-            itemRegistry.colorSort();
+        if (itemRegistry.rainbowShenanigans$isColorSorted()) { // See RainbowShenanigansMod#onInitializeClient
+            itemRegistry.rainbowShenanigans$colorSort();
         }
     }
 

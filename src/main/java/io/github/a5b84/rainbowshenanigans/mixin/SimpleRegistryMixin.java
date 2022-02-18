@@ -1,6 +1,5 @@
 package io.github.a5b84.rainbowshenanigans.mixin;
 
-import com.google.common.collect.BiMap;
 import com.google.common.collect.Iterators;
 import com.mojang.serialization.Lifecycle;
 import io.github.a5b84.rainbowshenanigans.ColorBatch;
@@ -10,8 +9,10 @@ import io.github.a5b84.rainbowshenanigans.SortedDyeColor.ColorMatch;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.RegistryEntry.Reference;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,9 +27,10 @@ import java.util.Objects;
 @Mixin(SimpleRegistry.class)
 public abstract class SimpleRegistryMixin<T> implements ColorSortableRegistry {
 
-    @Shadow @Final private ObjectList<T> rawIdToEntry;
+    @Shadow @Final private ObjectList<Reference<T>> rawIdToEntry;
 
-    @Shadow @Final private BiMap<Identifier, T> idToEntry;
+    @Shadow @Nullable public abstract Identifier getId(T value);
+
     @Unique private ObjectList<T> sortedEntries;
     @Unique private ColorBatch<T> batch;
     @Unique private int batchStartIndex;
@@ -37,10 +39,10 @@ public abstract class SimpleRegistryMixin<T> implements ColorSortableRegistry {
     // @Injects
 
     /** Adds the new value to {@link #sortedEntries} */
-    @Inject(method = "set(ILnet/minecraft/util/registry/RegistryKey;Ljava/lang/Object;Lcom/mojang/serialization/Lifecycle;Z)Ljava/lang/Object;",
+    @Inject(method = "set(ILnet/minecraft/util/registry/RegistryKey;Ljava/lang/Object;Lcom/mojang/serialization/Lifecycle;Z)Lnet/minecraft/util/registry/RegistryEntry;",
             at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/ObjectList;size(I)V", shift = At.Shift.AFTER, remap = false))
     private <V extends T> void onSet(int rawId, RegistryKey<T> key, V entry, Lifecycle lifecycle, boolean checkDuplicateKeys, CallbackInfoReturnable<V> cir) {
-        if (isColorSorted()) {
+        if (rainbowShenanigans$isColorSorted()) {
             if (rawId >= sortedEntries.size()) {
                 sortedEntries.size(rawIdToEntry.size());
                 addEntry(rawId, key.getValue(), entry);
@@ -53,7 +55,7 @@ public abstract class SimpleRegistryMixin<T> implements ColorSortableRegistry {
     /** Replaces the default iterator with the sorted one if applicable */
     @Inject(method = "iterator", at = @At("HEAD"), cancellable = true)
     private void onIterator(CallbackInfoReturnable<Iterator<T>> cir) {
-        if (isColorSorted()) {
+        if (rainbowShenanigans$isColorSorted()) {
             if (batch != null) {
                 registerBatch();
                 batch = null;
@@ -104,20 +106,20 @@ public abstract class SimpleRegistryMixin<T> implements ColorSortableRegistry {
     // ColorSortableRegistry implementation
 
     @Override
-    public boolean isColorSorted() {
+    public boolean rainbowShenanigans$isColorSorted() {
         return sortedEntries != null;
     }
 
     @Override
-    public void makeColorSorted() {
+    public void rainbowShenanigans$makeColorSorted() {
         int capacity = ((ObjectArrayList<T>) rawIdToEntry).elements().length;
         sortedEntries = new ObjectArrayList<>(capacity);
-        colorSort();
+        rainbowShenanigans$colorSort();
     }
 
     @Override
-    public void colorSort() {
-        if (!isColorSorted()) {
+    public void rainbowShenanigans$colorSort() {
+        if (!rainbowShenanigans$isColorSorted()) {
             throw new IllegalStateException("Tried to sort a registry that isn't color-sorted");
         }
 
@@ -127,10 +129,11 @@ public abstract class SimpleRegistryMixin<T> implements ColorSortableRegistry {
         if (!rawIdToEntry.isEmpty()) {
             // Sort existing entries
             int rawId = 0;
-            BiMap<T, Identifier> entryToId = idToEntry.inverse();
-            for (T entry : rawIdToEntry) {
-                if (entry != null) {
-                    Identifier id = entryToId.get(entry);
+            for (Reference<T> reference : rawIdToEntry) {
+                if (reference != null) {
+                    T entry = reference.value();
+                    Identifier id = getId(entry);
+                    //noinspection ConstantConditions
                     addEntry(rawId, id, entry);
                 }
                 rawId++;
